@@ -14,10 +14,8 @@ def extract_functions(source, name, length):
                 for i in range(length+1):
                     f.write(source[i])
 
-def main():
-    if len(sys.argv) < 2:
-        sys.exit(1)
-    filename = sys.argv[1]
+def main(filename):
+    funcs = []
     result = subprocess.run(
         ["lizard", "--csv", filename],
         capture_output=True,
@@ -36,6 +34,7 @@ def main():
             length = int(row[4])
             file = row[6]
             func = row[7]
+            funcs.append(func)
             extract_functions(lines, func, length)
 
             if ccn <= 10:
@@ -45,8 +44,12 @@ def main():
             f.write(f"{func}")
 
         print(f"{file} {func} CCN={ccn} NLOC={nloc} [{level}]")
+    print(funcs)
+    return funcs
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        sys.exit(1)
+    main(sys.argv[1])
 # https://github.com/terryyin/lizard
 # https://github.com/marketplace/actions/lizard-runner
