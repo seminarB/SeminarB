@@ -268,8 +268,9 @@ def count_code_lines(func):
 
     return len(code_lines)
 
-def main():
-    funcs = split_functions("analyze.py")
+def main(filename):
+    NG_FUNC = []
+    funcs = split_functions(filename)
     for func in funcs:
         with open(f"tmp/{func}.py", "r") as f:
             src = f.read()
@@ -280,9 +281,13 @@ def main():
         counter.visit(tree)
         branch_count = sum(counter.conds.values())
         depth = counter.max_depth
-        if branch_count ＞３：
-            NG
+        branch_count_threshhold = 4
+        depth_threshhold = 2
+        line_threshhold = 50
+        if branch_count > branch_count or depth > depth_threshhold or line > line_threshhold:
+            NG_FUNC.append(func)
         print(f"{func}: {branch_count}: Max Depth={depth}: Lines={line}")
+    return NG_FUNC
 
 if __name__ == '__main__':
-    main()
+    main("analyze.py")
