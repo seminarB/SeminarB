@@ -1,8 +1,7 @@
-# This function checks if a given number is even or odd and prints the result.
 def fun(x):
-    if (x % 2 == 0):
-        print("even")
+    if (x % 3 == 0):
+        print("multiple of 3")
     else:
-        print("odd")
+        print("not multiple of 3")
 
 fun(2)
