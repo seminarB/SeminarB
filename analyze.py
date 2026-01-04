@@ -135,17 +135,17 @@ def split_functions(src):
             "line": fn.lineno
         }
 
-    others = [
-        node for node in tree.body
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    ]
+    # others = [
+    #     node for node in tree.body
+    #     if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    # ]
 
-    if others:
-        mod = ast.Module(body=others, type_ignores=[])
-        functions["source_other"] = {
-            "src": ast.unparse(mod),
-            "line": 0
-        }
+    # if others:
+    #     mod = ast.Module(body=others, type_ignores=[])
+    #     functions["source_other"] = {
+    #         "src": ast.unparse(mod),
+    #         "line": 0
+    #     }
 
     return functions
 

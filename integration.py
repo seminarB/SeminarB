@@ -13,3 +13,8 @@ def receiveFileAndReturnComment(file):
         })
 
     return result
+
+if __name__ == '__main__':
+    with open("api.py", "r") as f:
+        src = f.read()
+    print(receiveFileAndReturnComment(src))
