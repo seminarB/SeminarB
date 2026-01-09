@@ -1,3 +1,4 @@
 .env
 TODO.md
 api_pre.py
+__pycache__/
