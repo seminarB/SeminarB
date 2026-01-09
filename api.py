@@ -3,42 +3,24 @@ import os
 from google import genai
 from dotenv import load_dotenv # API key (environment variable) is in .env file
 
-# read .env file and load variables into the system
-load_dotenv()
+def api_call(file, function):
+    # read .env file and load variables into the system
+    load_dotenv()
 
-# check if API key was found
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    print("Error: API key not found.")
-    sys.exit(1) # error code
+    # check if API key was found
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        print("Error: API key not found.")
+        sys.exit(1) # error code
 
-# the client gets the API key from the environment variable `GEMINI_API_KEY`.
-client = genai.Client(api_key=api_key)
+    # the client gets the API key from the environment variable `GEMINI_API_KEY`.
+    client = genai.Client(api_key=api_key)
 
-# catch the file (file to be commented) name from the command line
-# command format: python api.py <filename> <function>
+    code_content = file
 
-# TODO: for now, comments only first argument and ignores the rest
-# check if there is an argument
-if len(sys.argv) < 3:
-    print("Usage: python api.py <filename> <function>")
-    sys.exit(1)
-
-# catch file name
-filename = sys.argv[1]
-function = sys.argv[2]
-
-# try to open file and catch its content
-try:
-    with open(filename, "r", encoding="utf-8") as f:
-        code_content = f.read()
-except FileNotFoundError:
-    print(f"Error: File '{filename}' not found.")
-    sys.exit(1)
-
-# API call prompt
-# 日本語
-prompt_jp = f'''
+    # API call prompt
+    # 日本語
+    prompt_jp = f'''
 あなたは、以下のPythonコードを作成した経験豊富なプログラマです。
 他の開発者がコードの動作を理解できるように、特定の関数にコメント（docstring）を追加しようとしています。
 
@@ -70,8 +52,8 @@ imag -- 虚部 (default 0.0)
 {function}
 '''
 
-# english
-prompt_eng = f'''
+    # english
+    prompt_eng = f'''
 You are an experienced programmer who created the Python code below.
 You are trying to add comments (docstrings) to a specific function so that other developers can understand the code's behavior.
 
@@ -103,15 +85,19 @@ Target Function:
 {function}
 '''
 
-# API call
-print("calling API")
-response = client.models.generate_content(
-    model="gemini-2.5-flash", 
-    contents=prompt_jp
-)
+    # API call
+    print("calling API")
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", 
+        contents=prompt_jp
+    )
 
-# write commented code to the file
-# with open (filename, "w", encoding="utf-8") as f:
-#     f.write(response.text)
-print(response.text)
-print("OK")
+    # write commented code to the file
+    # with open (filename, "w", encoding="utf-8") as f:
+    #     f.write(response.text)
+    print(response.text)
+    print("OK")
+    return response.text
+
+if __name__ == '__main__':
+    api_call()
