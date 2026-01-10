@@ -3,7 +3,7 @@ import os
 from google import genai
 from dotenv import load_dotenv # API key (environment variable) is in .env file
 
-def api_call(file, function):
+def api_call(function):
     # read .env file and load variables into the system
     load_dotenv()
 
@@ -16,7 +16,7 @@ def api_call(file, function):
     # the client gets the API key from the environment variable `GEMINI_API_KEY`.
     client = genai.Client(api_key=api_key)
 
-    code_content = file
+    # code_content = file
 
     # API call prompt
     # 日本語
@@ -24,7 +24,7 @@ def api_call(file, function):
     あなたは、以下のPythonコードを作成した経験豊富なプログラマです。
     他の開発者がコードの動作を理解できるように、特定の関数にコメント（docstring）を追加しようとしています。
 
-    指定されたコードの中から「{function}」という名前の関数を見つけ、その機能の要約、引数、戻り値、副作用、送出される例外、および制約事項を記載した複数行のdocstringを作成してください。
+    関数の機能の要約、引数、戻り値、副作用、送出される例外、および制約事項を記載した複数行のdocstringを作成してください。
 
     1. Docstringは3つのダブルクォートで開始し、同じ行に関数の概要を記述する
     2. その直後に空行を1つ挿入する
@@ -61,11 +61,7 @@ def api_call(file, function):
     送出する例外:
         ValueError: 付与するレベルが無効な場合
     """
-
-    対象コード：
-    {code_content}
-
-    対象関数：
+    対象関数:
     {function}
     '''
 
@@ -74,7 +70,7 @@ def api_call(file, function):
     You are an experienced programmer who created the Python code below.
     You are trying to add comments (docstrings) to a specific function so that other developers can understand the code's behavior.
 
-    Find the function named "{function}" within the specified code, and create a multi-line docstring describing its function summary, arguments, return values, side effects, exceptions raised, and restrictions.
+    Create a multi-line docstring describing function summary, arguments, return values, side effects, exceptions raised, and restrictions.
 
     1. Start the docstring with three double quotes and write the function summary on the same line.
     2. Insert one empty line immediately after that.
@@ -111,10 +107,6 @@ def api_call(file, function):
     送出する例外:
         ValueError: 付与するレベルが無効な場合
     """
-
-    Target Code:
-    {code_content}
-
     Target Function:
     {function}
     '''

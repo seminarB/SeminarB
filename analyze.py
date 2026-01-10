@@ -1,7 +1,7 @@
 import ast
 import os
 import io
-import shutil
+import copy
 import tokenize
 
 class ConditionCounter(ast.NodeVisitor):
@@ -119,6 +119,36 @@ def remove_inner_functions(fn):
         if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
     ]
 
+# def split_functions(src):
+#     tree = ast.parse(src)
+
+#     collector = FunctionCollector()
+#     collector.visit(tree)
+
+#     functions = {}
+
+#     for fn, parent in collector.functions:
+#         remove_inner_functions(fn)
+#         name = fn.name
+#         functions[name] = {
+#             "src": ast.unparse(fn),
+#             "line": fn.lineno
+#         }
+
+#     # others = [
+#     #     node for node in tree.body
+#     #     if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+#     # ]
+
+#     # if others:
+#     #     mod = ast.Module(body=others, type_ignores=[])
+#     #     functions["source_other"] = {
+#     #         "src": ast.unparse(mod),
+#     #         "line": 0
+#     #     }
+
+#     return functions
+
 def split_functions(src):
     tree = ast.parse(src)
 
@@ -128,24 +158,20 @@ def split_functions(src):
     functions = {}
 
     for fn, parent in collector.functions:
-        remove_inner_functions(fn)
         name = fn.name
+
+        # ① オリジナル（inner削除なし）
+        original_fn = copy.deepcopy(fn)
+
+        # ② 解析用（inner削除あり）
+        analyzed_fn = copy.deepcopy(fn)
+        remove_inner_functions(analyzed_fn)
+
         functions[name] = {
-            "src": ast.unparse(fn),
+            "src": ast.unparse(analyzed_fn),
+            "original_src": ast.unparse(original_fn),
             "line": fn.lineno
         }
-
-    # others = [
-    #     node for node in tree.body
-    #     if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    # ]
-
-    # if others:
-    #     mod = ast.Module(body=others, type_ignores=[])
-    #     functions["source_other"] = {
-    #         "src": ast.unparse(mod),
-    #         "line": 0
-    #     }
 
     return functions
 
@@ -204,6 +230,7 @@ def main(src):
         ):
             NG_FUNC[name] = {
                 "src": func_src,
+                "original_src" : info["original_src"],
                 "line": lineno
             }
 
