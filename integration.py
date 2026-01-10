@@ -6,7 +6,7 @@ def receiveFileAndReturnComment(file):
     result = []
 
     for name, info in ng.items():
-        response = api_call(file, name)
+        response = api_call(info["original_src"])
         result.append({
             "line": info["line"],
             "comment": response
@@ -15,10 +15,12 @@ def receiveFileAndReturnComment(file):
     return result
 
 if __name__ == '__main__':
-    with open("dummy.py", "r") as f:
+    with open("pbl.py", "r") as f:
         src = f.read()
     result = receiveFileAndReturnComment(src)
-    for item in result:
-        print(f"📍 {item['line']}行目へのコメント:")
-        print(f"{item['comment']}")
-        print("-" * 30)
+    with open("text.txt", "w") as f:
+
+        for item in result:
+            f.write(f"📍 {item['line']}行目へのコメント:")
+            f.write(f"{item['comment']}")
+            f.write("-" * 30)

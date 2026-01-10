@@ -115,7 +115,7 @@ def api_call(function):
     print("calling API")
     response = client.models.generate_content(
         model="gemini-2.5-flash", 
-        contents=prompt_jp
+        contents=prompt_eng
     )
 
     # write commented code to the file

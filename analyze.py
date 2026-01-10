@@ -248,4 +248,4 @@ if __name__ == '__main__':
         print("----")
         print(f"NG FUNCTION: {name}")
         print(f"Defined at line: {info['line']}")
-        print(info["src"])
+        print(info["original_src"])
